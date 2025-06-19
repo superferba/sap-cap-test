@@ -2,6 +2,7 @@ _schema-version: 3.3.0
 ID: sap-cap-test
 description: A simple CAP project.
 version: 1.0.0
+
 modules:
 - name: sap-cap-test-srv
   type: nodejs
@@ -24,6 +25,12 @@ modules:
   - name: sap-cap-test-repo-host
     parameters:
       content-target: true
+      service-key:
+        name: cap-repo-host-key
+  - name: sap-cap-test-auth
+    parameters:
+      service-key:
+        name: cap-auth-key
   build-parameters:
     build-result: resources
     requires:
@@ -31,6 +38,21 @@ modules:
       - nctproject1.zip
       name: nctproject1
       target-path: resources/
+  parameters:
+    content:
+      instance:
+        destinations:
+        - HTML5.Timeout: 300000
+          Name: cap_managedapprouter_cap_repo_host
+          ServiceInstanceName: cap-html5-repo-host-srv
+          ServiceKeyName: cap-repo-host-key
+          sap.cloud.service: cap_managedapprouter
+        - Authentication: OAuth2UserTokenExchange
+          Name: cap_managedapprouter_cap_auth
+          ServiceInstanceName: sap-cap-test-auth
+          ServiceKeyName: cap-auth-key
+          sap.cloud.service: cap_managedapprouter
+        existing_destinations_policy: ignore
 - name: nctproject1
   type: html5
   path: app/project1
@@ -41,6 +63,7 @@ modules:
     - npm install
     - npm run build:cf
     supported-platforms: []
+
 resources:
 - name: sap-cap-test-auth
   type: org.cloudfoundry.managed-service
